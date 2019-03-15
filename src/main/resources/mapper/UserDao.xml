@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huaruan.qhg.dao.UserDao">
+	<!-- 目的：为DAO接口方法提供sql语句配置 -->
+	<!-- 查询用户和密码进行登录 -->
+	<select id="findByUsername" resultType="com.huaruan.qhg.bean.User" parameterType="String">
+	
+		select * from user where username = #{username}
+			
+	</select>
+	
+	<!-- 查询用户总数 -->
+	<select id="findAllUserCount" resultType="java.lang.Integer">
+		select count(id) from user
+	</select>
+	
+	<!-- 根据起始记录数和每页数量查询出用户列表 -->
+	<select id="findUsersByPage" resultType="com.huaruan.qhg.bean.User">
+		select * from user limit #{begin},#{pageSize}
+	</select>
+	
+	<!-- 根据id查找用户 -->
+	<select id="findById" resultType="com.huaruan.qhg.bean.User">
+		select * from user where id = #{id}
+	</select>
+	
+	<!-- 根据用户名和id查找出除此id之外的其他用户 -->
+	<select id="findExtraExistsByUsername" resultType="com.huaruan.qhg.bean.User">
+		select * from user where id<![CDATA[<> ]]>#{id} and username = #{username}
+	</select>
+	
+	<!-- 插入新用户 -->
+	<insert id="insertUser" parameterType="com.huaruan.qhg.bean.User">
+		insert into user (username,password) values (#{username},#{password})
+	</insert>
+	
+	<!-- 查找所有用户 -->
+	<select id="findAllUser" resultType="com.huaruan.qhg.bean.User">
+		select * from user
+	</select>
+	
+	<!-- 根据用户名条件模糊查询 -->
+	<select id="findByUsernameCondition" resultType="com.huaruan.qhg.bean.User">
+		select * from user where username like "%"#{usernameCondition}"%"
+	</select>
+	
+	<!-- 根据id修改用户信息 -->
+	<update id="updateById" parameterType="com.huaruan.qhg.bean.User">
+		update user set username = #{username},password = #{password} where id = #{id}
+	</update>
+	
+	<!-- 根据id删除用户 -->
+	<delete id="deleteById">
+		delete from user where id=#{id}
+	</delete>
+</mapper>
