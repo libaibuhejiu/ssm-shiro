@@ -1,7 +1,11 @@
 package com.huaruan.qhg.bean;
 
 import java.util.List;
-
+/**
+ * 用于分页
+ * @author yangjian
+ *
+ */
 public class PageBean {
 
 	private int currPage;  //当前页

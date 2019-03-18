@@ -7,6 +7,12 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>ssm-project Maven Webapp</name>
   <url>http://maven.apache.org</url>
+  <!-- 用来设置版本号 -->
+  <properties>
+  	 <pagehelper.version>5.1.2-beta</pagehelper.version>
+  	 <slf4j.version>1.7.12</slf4j.version>
+     <log4j.version>1.2.17</log4j.version>
+  </properties>
   <dependencies>
 	<dependency>
 		<groupId>org.springframework</groupId>
@@ -94,6 +100,11 @@
 		<artifactId>fastjson</artifactId>
 		<version>1.2.28</version>
 	</dependency>
+	    <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.13</version>
+        </dependency>
 	<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
     <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
@@ -118,6 +129,28 @@
 		<version>3.8.1</version>
 		<scope>test</scope>
 	</dependency>
+	    <!-- log start -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <!-- log END -->
+	<dependency>
+        <groupId>com.github.pagehelper</groupId>
+        <artifactId>pagehelper</artifactId>
+        <version>${pagehelper.version}</version>
+    </dependency>
 </dependencies>
   <build>
     <finalName>ssm-project</finalName>

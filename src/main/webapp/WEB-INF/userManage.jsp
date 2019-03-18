@@ -60,7 +60,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach items="${pageBean.userList }" var="user">
+					<c:forEach items="${pageInfo.list }" var="user">
 						<tr>
 							<td>${user.id }</td>
 							<td>${user.username }</td>
@@ -71,69 +71,69 @@
 							</td>
 						</tr>
 					</c:forEach>
-<tr align="center">
-   <td colspan="9">
-	第<font style="color: blue">${pageBean.currPage }/${pageBean.totalPage }</font>页   
-	每页显示<font style="color: blue">${pageBean.pageSize }</font>条   
-	总记录数<font style="color: blue">${pageBean.allCount }</font>条  
-	<c:if test="${pageBean.currPage != 1 }">  <!-- 判断当前页是否第一页,若不是第一页,就显示首页和下一页,反之不显示 -->
-	   <a href="${pageContext.request.contextPath }/user/findUsersByPage?currPage=1" style="text-decoration: none">首页</a>
-	   <a href="${pageContext.request.contextPath }/user/findUsersByPage?currPage=${pageBean.currPage - 1}"  style="text-decoration: none">前一页 </a>
-	</c:if>
-	<c:if test="${pageBean.totalPage <= 9 }"> <!-- 分页显示页码这里选择的是9,若是总页数小于等于9,则全部显示 -->
-	   <c:forEach begin="1" var="i" end="${pageBean.totalPage }">
-		<c:if test="${pageBean.currPage == i }">
-		   <font style="color: red">${i }</font> 
-		</c:if>
-		<c:if test="${pageBean.currPage != i }"> <!-- 选择你要去的页数,假如当前页是4,然后点击6,此时i=6,点击后跳转第6页 -->
-			<a href="${pageContext.request.contextPath }/user/findUsersByPage?currPage=${i }" style="text-decoration: none">${i } </a>
-		</c:if>
-	    </c:forEach>	
-	</c:if>
-	<c:if test="${pageBean.totalPage > 9 }"><!-- 当总页数大于9的时候 -->
-		<c:if test="${pageBean.currPage <= 5 }"> <!-- 若是当前页小于5,则显示9个页码后用...代替,表示后面还有 -->
-			<c:forEach var="i" begin="1" end="9">
-				<c:if test="${pageBean.currPage == i }">
-					<font style="color: red">${i }</font> 
-				</c:if>
-				<c:if test="${pageBean.currPage != i }">
-				<a href="${pageContext.request.contextPath }/user/findUsersByPage?currPage=${i }" style="text-decoration: none">${i } </a>
-				</c:if>
-			</c:forEach>
-						...
-		</c:if>
-		<c:if test="${pageBean.currPage > 5 }"> <!-- 若是当前页大于5,则需要进行下面的判断 -->
-			<c:if test="${pageBean.currPage + 4 < pageBean.totalPage }">  <!-- 若是这种情况,则为中间显示9个页码,前后均为... -->
-				...
-				<c:forEach var="i" begin="${pageBean.currPage - 4 }" end="${pageBean.currPage + 4  }">
-					<c:if test="${pageBean.currPage == i }">
-						<font style="color: red">${i }</font> 
-					</c:if>
-					<c:if test="${pageBean.currPage != i }">
-				<a href="${pageContext.request.contextPath }/user/findUsersByPage?currPage=${i }" style="text-decoration: none">${i } </a>
-					</c:if>
-				</c:forEach>
-				...
-			</c:if>
-			<c:if test="${pageBean.currPage + 4 >= pageBean.totalPage }"><!-- 若是这种情况,只需前面加上...即可 -->
-				...
-				<c:forEach var="i" begin="${pageBean.totalPage - 8 }" end="${pageBean.totalPage }">
-					<c:if test="${pageBean.currPage == i }">
-						<font style="color: red">${i }</font> 
-					</c:if>
-					<c:if test="${pageBean.currPage != i }">
-				<a href="${pageContext.request.contextPath }/user/findUsersByPage?currPage=${i }" style="text-decoration: none">${i } </a>
-					</c:if>
-				</c:forEach>
-			</c:if>
-		</c:if>
-	</c:if>
-	<c:if test="${pageBean.currPage != pageBean.totalPage }"> <!-- 此情况和显示首页前一页类似,不再赘述 -->
-	<a href="${pageContext.request.contextPath }/user/findUsersByPage?currPage=${pageBean.currPage + 1 }" style="text-decoration: none">后一页</a>
-		<a href="${pageContext.request.contextPath }/user/findUsersByPage?currPage=${pageBean.totalPage }" style="text-decoration: none">末页</a>
-	</c:if> 
-   </td>
-</tr>
+						<tr align="center">
+						   <td colspan="9">
+							第<font style="color: blue">${pageInfo.pageNum }</font>页   
+							每页显示<font style="color: blue">${pageInfo.pageSize }</font>条   
+							总记录数<font style="color: blue">${pageInfo.total }</font>条  
+							<c:if test="${pageInfo.pageNum != 1 }">  <!-- 判断当前页是否第一页,若不是第一页,就显示首页和下一页,反之不显示 -->
+							   <a href="${pageContext.request.contextPath }/user/findUsersByPage?pageNum=1" style="text-decoration: none">首页</a>
+							   <a href="${pageContext.request.contextPath }/user/findUsersByPage?pageNum=${pageInfo.pageNum - 1}"  style="text-decoration: none">前一页 </a>
+							</c:if>
+							<c:if test="${pageInfo.pages <= 9 }"> <!-- 分页显示页码这里选择的是9,若是总页数小于等于9,则全部显示 -->
+							   <c:forEach begin="1" var="i" end="${pageInfo.pages }">
+								<c:if test="${pageInfo.pageNum == i }">
+								   <font style="color: red">${i }</font> 
+								</c:if>
+								<c:if test="${pageInfo.pageNum != i }"> <!-- 选择你要去的页数,假如当前页是4,然后点击6,此时i=6,点击后跳转第6页 -->
+									<a href="${pageContext.request.contextPath }/user/findUsersByPage?pageNum=${i }" style="text-decoration: none">${i } </a>
+								</c:if>
+							   </c:forEach>	
+							</c:if>
+							<c:if test="${pageInfo.pages > 9 }"><!-- 当总页数大于9的时候 -->
+								<c:if test="${pageInfo.pageNum <= 5 }"> <!-- 若是当前页小于5,则显示9个页码后用...代替,表示后面还有 -->
+									<c:forEach var="i" begin="1" end="9">
+										<c:if test="${pageInfo.pageNum == i }">
+											<font style="color: red">${i }</font> 
+										</c:if>
+										<c:if test="${pageInfo.pageNum != i }">
+											<a href="${pageContext.request.contextPath }/user/findUsersByPage?pageNum=${i }" style="text-decoration: none">${i } </a>
+										</c:if>
+									</c:forEach>
+												...
+								</c:if>
+								<c:if test="${pageInfo.pageNum > 5 }"> <!-- 若是当前页大于5,则需要进行下面的判断 -->
+									<c:if test="${pageInfo.pageNum + 4 < pageInfo.pages }">  <!-- 若是这种情况,则为中间显示9个页码,前后均为... -->
+										...
+										<c:forEach var="i" begin="${pageInfo.pageNum - 4 }" end="${pageInfo.pageNum + 4  }">
+											<c:if test="${pageInfo.pageNum == i }">
+												<font style="color: red">${i }</font> 
+											</c:if>
+											<c:if test="${pageInfo.pageNum != i }">
+												<a href="${pageContext.request.contextPath }/user/findUsersByPage?pageNum=${i }" style="text-decoration: none">${i } </a>
+											</c:if>
+										</c:forEach>
+										...
+									</c:if>
+									<c:if test="${pageInfo.pageNum + 4 >= pageInfo.pages }"><!-- 若是这种情况,只需前面加上...即可 -->
+										...
+										<c:forEach var="i" begin="${pageInfo.pages - 8 }" end="${pageInfo.pages }">
+											<c:if test="${pageInfo.pageNum == i }">
+												<font style="color: red">${i }</font> 
+											</c:if>
+											<c:if test="${pageInfo.pageNum != i }">
+												<a href="${pageContext.request.contextPath }/user/findUsersByPage?pageNum=${i }" style="text-decoration: none">${i } </a>
+											</c:if>
+										</c:forEach>
+									</c:if>
+								</c:if>
+							</c:if>
+							<c:if test="${pageInfo.pageNum != pageInfo.pages }"> <!-- 此情况和显示首页前一页类似,不再赘述 -->
+								<a href="${pageContext.request.contextPath }/user/findUsersByPage?pageNum=${pageInfo.pageNum + 1 }" style="text-decoration: none">后一页</a>
+								<a href="${pageContext.request.contextPath }/user/findUsersByPage?pageNum=${pageInfo.pages }" style="text-decoration: none">末页</a>
+							</c:if> 
+						   </td>
+						</tr>
 				</tbody>
 			</table>
 		</div>

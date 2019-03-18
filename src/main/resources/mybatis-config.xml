@@ -5,8 +5,16 @@
 <configuration>
     <settings>
         <setting name="mapUnderscoreToCamelCase" value="true" />
+        <setting name="logImpl" value="LOG4J" />
     </settings>
     <typeAliases>
         <package name="com.huaruan.qhg.bean" />
     </typeAliases>
+    <plugins>
+        <!-- com.github.pagehelper为PageHelper类所在包名 -->
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+            <!-- 设置数据库类型Oracle,Mysql,MariaDB,SQLite,Hsqldb,PostgreSQL六种数据库 -->
+            <property name="reasonable" value="true" />
+        </plugin>
+    </plugins>
 </configuration>

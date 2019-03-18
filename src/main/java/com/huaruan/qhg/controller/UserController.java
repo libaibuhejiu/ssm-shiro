@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.huaruan.qhg.bean.PageBean;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.huaruan.qhg.bean.User;
 import com.huaruan.qhg.dao.UserDao;
 import com.huaruan.qhg.service.UserService;
 import com.huaruan.qhg.util.MD5Utils;
-import com.huaruan.qhg.util.PBUtils;
 
 @Controller
 @RequestMapping("/user")
@@ -49,29 +50,29 @@ public class UserController {
 	}
 	
 	/**
-	 * ×¢²á¼ì²é
+	 * ×¢ï¿½ï¿½ï¿½ï¿½
 	 * @param username
 	 * @param password
-	 * @return ¼ì²é×´Ì¬µÄmap,1³É¹¦£¬2´æÔÚ£¬0Ê§°Ü
+	 * @return ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½map,1ï¿½É¹ï¿½ï¿½ï¿½2ï¿½ï¿½ï¿½Ú£ï¿½0Ê§ï¿½ï¿½
 	 */
 	@RequestMapping(value="/checkRegister",method=RequestMethod.POST)
 	@ResponseBody
 	public HashMap<String,String> checkRegister(@RequestParam("username") String username,@RequestParam("password") String password) {
 		User user = new User();
 		user.setUsername(username);
-		user.setPassword(MD5Utils.md5(password));//md5¼ÓÃÜÃÜÂë
+		user.setPassword(MD5Utils.md5(password));//md5ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		int sign = userService.register(user);
 		HashMap<String,String> map = new HashMap<String, String>();
 		if (sign == 1) {
-			map.put("status","1");//×¢²á³É¹¦
+			map.put("status","1");//×¢ï¿½ï¿½É¹ï¿½
 			return map;
 		}
 		if (sign == 2) {
-			map.put("status","2");//ÓÃ»§ÃûÒÑ´æÔÚ
+			map.put("status","2");//ï¿½Ã»ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½ï¿½ï¿½
 			return map;
 		}
 		if (sign == 0) {
-			map.put("status","0");//×¢²áÊ§°Ü
+			map.put("status","0");//×¢ï¿½ï¿½Ê§ï¿½ï¿½
 			return map;
 		}
 		return map;
@@ -83,77 +84,85 @@ public class UserController {
 		User unknowuser = new User();
 		String md5password = MD5Utils.md5(password);
 		unknowuser.setUsername(username);
-		unknowuser.setPassword(md5password);//md5¼ÓÃÜÃÜÂë
+		unknowuser.setPassword(md5password);//md5ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		User user = userService.login(unknowuser.getUsername());
 		HashMap<String,String> map = new HashMap<String, String>();
 		if (user != null) {
 			if (user.getPassword().equals(unknowuser.getPassword())) {
-				map.put("status","1");//ÃÜÂëÕýÈ·£¬µÇÂ¼³É¹¦
+				map.put("status","1");//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½Â¼ï¿½É¹ï¿½
 			} else {
-				map.put("status","2");//ÃÜÂë´íÎó£¬µÇÂ¼Ê§°Ü
+				map.put("status","2");//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó£¬µï¿½Â¼Ê§ï¿½ï¿½
 			}
 		} else {
-			map.put("status","0");//ÓÃ»§Ãû²»´æÔÚ
+			map.put("status","0");//ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		}
 		return map;
 	}
 	
 	@RequestMapping(value="/userManage")
 	public String userManage(HttpServletRequest request) {
-		PageBean pb = PBUtils.generatorPB(1, userDao);
-		request.setAttribute("pageBean",pb);
+/*		PageBean pb = PBUtils.generatorPB(1, userDao);
+		request.setAttribute("pageBean",pb);*/
+		PageHelper.startPage(1,10);
+		List<User> userList = userDao.findAllUser();
+		PageInfo<User> userPageInfo = new PageInfo<User>(userList);
+		request.setAttribute("pageInfo",userPageInfo);
 		return "userManage";
 	}
 	
-	//ÓÃ»§ÃûÌõ¼þÄ£ºý²éÑ¯
+	//ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½Ñ¯
 	@RequestMapping(value="/findByUsernameCondition")
 	public String findByUsernameCondition(HttpServletRequest request) {
 		String usernameCondition = request.getParameter("username");
-		List<User> userList = userDao.findByUsernameCondition(usernameCondition);
+/*		List<User> userList = userDao.findByUsernameCondition(usernameCondition);
 		PageBean pb = PBUtils.generatorPB(1, userDao);
-		//ÐèÒªÖØÐÂset PageBeanµÄ¸÷ÏîÊôÐÔÖµ
+		//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½set PageBeanï¿½Ä¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
 		pb.setUserList(userList);
 		pb.setAllCount(userList.size());
-		//ÖØÐÂ¼ÆËã×ÜÓÃ»§Êý²¢set
+		//ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½set
 		double allUserCount = userList.size();
 		int totalPage = (int) Math.ceil(allUserCount / (pb.getPageSize()));
 		pb.setTotalPage(totalPage);
-		request.setAttribute("pageBean",pb);
+		request.setAttribute("pageBean",pb);*/
+		PageHelper.startPage(1,10);
+		List<User> userList = userDao.findByUsernameCondition(usernameCondition);
+		PageInfo<User> userPageInfo = new PageInfo<User>(userList);
+		request.setAttribute("pageInfo",userPageInfo);
 		return "userManage";
 	}
 	
-	//ÖØ¶¨Ïòµ½ÐÂÔöÓÃ»§Ò³Ãæ
+	//ï¿½Ø¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ò³ï¿½ï¿½
 	@RequestMapping("/addWin")
 	public String addWin() {
 		return "addWin";
 	}
 	
-	//Ç°ÍùÐÞ¸ÄÓÃ»§Ò³Ãæ
+	//Ç°ï¿½ï¿½ï¿½Þ¸ï¿½ï¿½Ã»ï¿½Ò³ï¿½ï¿½
 	@RequestMapping(value="/updateWin")
 	public String updateWin(HttpServletRequest request) {
 		String strId = request.getParameter("id");
 		int id = Integer.parseInt(strId);
-		//¸ù¾Ýid²éÕÒÓÃ»§
+		//ï¿½ï¿½ï¿½ï¿½idï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½
 		User oldUser = userDao.findById(id);
 		request.setAttribute("oldUser",oldUser);
 		return "updateWin";
 	}
 	
-	//ÐÞ¸ÄÓÃ»§
+	//ï¿½Þ¸ï¿½ï¿½Ã»ï¿½
 	@RequestMapping(value="/updateUser",method=RequestMethod.POST)
 	@ResponseBody
 	public HashMap<String,String> updateUser(@RequestParam("id") int id,@RequestParam("username") String username,@RequestParam("password") String password){
 		User unknowuser = userDao.findExtraExistsByUsername(id,username);
 		HashMap<String,String> map = new HashMap<String,String>();
 		if (unknowuser != null) {
-			map.put("status","0");//ÓÃ»§ÃûÒÑ´æÔÚ
-		} else {//ÓÃ»§Ãû¿ÉÓÃÔò¿ªÊ¼ÐÞ¸Ä
+			map.put("status","0");//ï¿½Ã»ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½ï¿½ï¿½
+		} else {//ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½Þ¸ï¿½
 			User user = new User();
 			user.setId(id);
 			user.setUsername(username);
 			user.setPassword(MD5Utils.md5(password));
 			userDao.updateById(user);
-			map.put("status","1");//ÐÞ¸Ä³É¹¦
+			map.put("status","1");//ï¿½Þ¸Ä³É¹ï¿½
 		}
 		return map;
 	}
@@ -164,18 +173,22 @@ public class UserController {
 		int rows = userDao.deleteById(id);
 		Map<String,String> map = new HashMap<String,String>();
 		if (rows > 0) {
-			map.put("status","1");//É¾³ý³É¹¦
+			map.put("status","1");//É¾ï¿½ï¿½ï¿½É¹ï¿½
 		} else {
-			map.put("status","0");//É¾³ýÊ§°Ü
+			map.put("status","0");//É¾ï¿½ï¿½Ê§ï¿½ï¿½
 		}
 		return map;
 	}
 	
-	//·ÖÒ³
+	//ï¿½ï¿½Ò³
 	@RequestMapping(value="/findUsersByPage")
-	public String findUsersByPage(int currPage,HttpServletRequest request) {
-		PageBean pb = PBUtils.generatorPB(currPage, userDao);
-		request.setAttribute("pageBean",pb);
+	public String findUsersByPage(@Param("pageNum")int pageNum,HttpServletRequest request) {
+/*		PageBean pb = PBUtils.generatorPB(currPage, userDao);
+		request.setAttribute("pageBean",pb);*/
+		PageHelper.startPage(pageNum,10);
+		List<User> userList = userDao.findAllUser();
+		PageInfo<User> userPageInfo = new PageInfo<User>(userList);
+		request.setAttribute("pageInfo",userPageInfo);
 		return "userManage";
 	}
 	
