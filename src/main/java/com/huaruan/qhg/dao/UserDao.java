@@ -1,77 +1,225 @@
 package com.huaruan.qhg.dao;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.huaruan.qhg.bean.Permission;
+import com.huaruan.qhg.bean.Role;
 import com.huaruan.qhg.bean.User;
 
 public interface UserDao {
 	/**
-	 * ¸ù¾İÓÃ»§Ãû²éÕÒÓÃ»§
-	 * @param usernameÓÃ»§Ãû
-	 * @return ÓÃ»§
+	 * é€šè¿‡ç”¨æˆ·åæŸ¥æ‰¾ç”¨æˆ·
+	 * @param username
+	 * @return ç”¨æˆ·
 	 */
 	User findByUsername(String username);
 	
 	/**
-	 * ²é³öÓÃ»§×ÜÊı
-	 * @return ÓÃ»§×ÜÊı
+	 * ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
+	 * @return ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
 	 */
 	int findAllUserCount();
 	
 	/**
-	 * ¸ù¾İÆğÊ¼¼ÇÂ¼ÊıºÍÃ¿Ò³ÊıÁ¿²éÑ¯³öÓÃ»§ÁĞ±í
-	 * @param beginÆğÊ¼µÄ¼ÇÂ¼Êı£¬Ò²¾ÍÊÇ´ÓµÚ¼¸Ìõ¼ÇÂ¼¿ªÊ¼
-	 * @param pageSizeÃ¿Ò³ÏÔÊ¾µÄÓÃ»§Êı
+	 * permissionè¡¨é‡Œæ˜¯å¦å­˜åœ¨è¯¥permission
+	 * @return å­˜åœ¨çš„ä¸ªæ•°
+	 */
+	int findPermissionCount(String permission);
+	
+	/**
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½Ã¿Ò³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½Ã»ï¿½ï¿½Ğ±ï¿½
+	 * @param beginï¿½ï¿½Ê¼ï¿½Ä¼ï¿½Â¼ï¿½ï¿½ï¿½ï¿½Ò²ï¿½ï¿½ï¿½Ç´ÓµÚ¼ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½Ê¼
+	 * @param pageSizeÃ¿Ò³ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½
 	 * @return
 	 */
 	List<User> findUsersByPage(@Param("begin") int begin,@Param("pageSize") int pageSize);
 	
 	/**
-	 * ¸ù¾İÓÃ»§ÃûÄ£ºı²éÑ¯
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½Ñ¯
 	 * @param usernameCondition
-	 * @return ÓÃ»§ÁĞ±í
+	 * @return ï¿½Ã»ï¿½ï¿½Ğ±ï¿½
 	 */
 	List<User> findByUsernameCondition(String usernameCondition);
 	
 	/**
-	 * ¸ù¾İÓÃ»§ÃûºÍid²éÕÒ³ö³ı´ËidÖ®ÍâµÄÆäËûÓÃ»§
-	 * @param map°üº¬ÁËint id,String username
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½idï¿½ï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½ï¿½idÖ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½
+	 * @param mapï¿½ï¿½ï¿½ï¿½ï¿½ï¿½int id,String username
 	 * @return
 	 */
 	User findExtraExistsByUsername(@Param("id")int id,@Param("username")String username);
 	
 	/**
-	 * ¸ù¾İid²éÕÒÓÃ»§
+	 * ï¿½ï¿½ï¿½ï¿½idï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½
 	 * @param id
-	 * @returnÓÃ»§¶ÔÏó
+	 * @returnï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
 	 */
 	User findById(int id);
 	
 	/**
-	 * ²åÈëĞÂÓÃ»§
-	 * @param userÓÃ»§
+	 * æ ¹æ®permissionä»permissionè¡¨ä¸­æŸ¥æ‰¾permissionçš„id
+	 * @param permission
+	 * @return
+	 */
+	int findByPerms(@Param("permission")String permission);
+	
+	/**
+	 * æ’å…¥æ–°ç”¨æˆ·
+	 * @param userï¿½Ã»ï¿½
 	 */
 	void insertUser(User user);
 	
 	/**
-	 * ²éÕÒËùÓĞÓÃ»§
+	 * æ’å…¥user_roleè¡¨
+	 * @param userId
+	 * @param roleId
+	 */
+	void insertUserRole(@Param("user_id")String userId,@Param("role_id")String roleId);
+	
+	/**
+	 * å‘permissionè¡¨ä¸­æ–°å¢æƒé™
+	 * @param permission
+	 * @param description
+	 */
+	@Transactional
+	public void insertIntoPermission(@Param("permission")String permission,@Param("description")String description);
+	
+	/**
+	 * å‘role_permissionè¡¨æ’å…¥
+	 */
+	void insertIntoRP(@Param("role_id")int roleId,@Param("permission_id")int permissionId,@Param("enable")int enable);
+	
+	/**
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½
 	 * @return
 	 */
 	List<User> findAllUser();
 	
 	/**
-	 * ¸ù¾İuserµÄidĞŞ¸ÄÓÃ»§ĞÅÏ¢
+	 * ï¿½ï¿½ï¿½ï¿½userï¿½ï¿½idï¿½Ş¸ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Ï¢
 	 * @param user
 	 */
 	void updateById(User user);
 	
 	/**
-	 * ¸ù¾İidÉ¾³ıÓÃ»§
+	 * ï¿½ï¿½ï¿½ï¿½idÉ¾ï¿½ï¿½ï¿½Ã»ï¿½
 	 * @param id
 	 */
 	int deleteById(int id);
+	
+	/**
+	 * æ ¹æ®ç”¨æˆ·idæŸ¥æ‰¾å‡ºè§’è‰²åˆ—è¡¨
+	 * @param userId
+	 * @return
+	 */
+	List<Role> findRoleListByUserId(@Param("user_id")int userId);
+	
+	/**
+	 * æ ¹æ®role_idæ‰¾å‡ºRoleå®ä¾‹
+	 * @param roleId
+	 * @return
+	 */
+	Role findRoleByRoleId(@Param("role_id")String roleId);
+	
+	/**
+	 * æ ¹æ®ç”¨æˆ·idæŸ¥æ‰¾å‡ºrole_id
+	 * @param userId
+	 * @return
+	 */
+	List<String> findRoleIdListByUserId(@Param("user_id")int userId);
 
+	/**
+	 * æ ¹æ®è§’è‰²idæŸ¥æ‰¾å‡ºæƒé™idåˆ—è¡¨
+	 * @param roleId
+	 * @return
+	 */
+	List<Integer> findPermissionListByRoleId(@Param("role_id")String roleId);
+	
+	/**
+	 * æ ¹æ®æƒé™idæ‰¾å‡ºæƒé™
+	 * @param permissionId
+	 * @return
+	 */
+	Permission findPermissionByPermissionId(@Param("id")int permissionId);
+	
+	/**
+	 * æ ¹æ®roleIdå’ŒpermissionIdåˆ é™¤å¯¹åº”æƒé™,å…¶å®æ˜¯å°†enableç½®ä¸º0
+	 * @param roleId
+	 * @param permissionId
+	 */
+	int deletePermissionBy2Id(@Param("role_id")int roleId,@Param("permission_id")int permissionId);
+	
+	/**
+	 * æ ¹æ®idåˆ é™¤permissionè¡¨çš„è®°å½•
+	 * @param roleId
+	 * @param permissionId
+	 */
+	void deletePermissionFormPermission(@Param("id")int id);
+	
+	/**
+	 *  æ ¹æ®roleIdå’ŒpermissionIdåˆ é™¤role_permissionè¡¨çš„è®°å½•
+	 * @param roleId
+	 * @param permissionId
+	 */
+	void deletePermissionFormRP(@Param("role_id")int roleId,@Param("permission_id")int permissionId);
+
+	
+	/**
+	 * æ ¹æ®roleIdå’ŒpermissionIdæ·»åŠ å¯¹åº”æƒé™
+	 * @param roleId
+	 * @param permissionId
+	 */
+	int addPermissionBy2Id(@Param("role_id")int roleId,@Param("permission_id")int permissionId);
+	
+	
+	/**
+	 * æ ¹æ®role_idç¡®å®šroleName
+	 * @param roleId
+	 * @return
+	 */
+	String findRoleNameByRoleId(@Param("role_id")String roleId);
+	
+	/**
+	 * åœ¨userè¡¨ä¸­æ ¹æ®ç”¨æˆ·idä¿®æ”¹role_id
+	 * @param id
+	 * @param roleId
+	 */
+	void updateRoleIdInUserTable(@Param("id")int id,@Param("role_id")int roleId);
+	
+	/**
+	 * åœ¨user_roleè¡¨ä¸­æ ¹æ®ç”¨æˆ·idä¿®æ”¹role_id
+	 * @param userId
+	 * @param roleId
+	 */
+	void updateRoleIdInUserRoleTable(@Param("user_id")int userId,@Param("role_id")int roleId);
+	
+	/**
+	 * æ ¹æ®permissionIdä¿®æ”¹Permissionè¡¨
+	 * @param permission
+	 * @param decription
+	 */
+	void updatePermissionById(@Param("id")int id,@Param("permission")String permission,@Param("description")String description);
+	
+	/**
+	 * æ ¹æ®permissionåœ¨permissionè¡¨ä¸­æŸ¥æ‰¾æœ‰å‡ ä¸ªåŒåæƒé™
+	 * @param permission
+	 * @return
+	 */
+	int findPermissionByPermission(@Param("permission")String permission);
+	
+	/**
+	 * æ ¹æ®è§’è‰²Idæ‰¾å‡ºæƒé™idåˆ—è¡¨
+	 * @param roleId
+	 * @return
+	 */
+	List<Integer> findPermissionIdListByRoleId(@Param("role_id")int roleId);
+	
+	/**
+	 * æ ¹æ®è§’è‰²Idæ‰¾å‡ºæ²¡æœ‰çš„æƒé™idåˆ—è¡¨
+	 * @param roleId
+	 * @return
+	 */
+	List<Integer> findUnPermissionIdListByRoleId(@Param("role_id")int roleId);
 }

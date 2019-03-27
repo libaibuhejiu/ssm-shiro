@@ -1,24 +1,31 @@
 package com.huaruan.qhg.service;
 
 import com.huaruan.qhg.bean.User;
-/**
- * ÓÃ»§µÄ½Ó¿ÚÀà
- * @author Administrator
- *
- */
+
+import java.util.List;
+
+import com.huaruan.qhg.bean.Permission;
+
 public interface UserService {
 	/**
-	 * ×¢²á
+	 * æ³¨å†Œ
 	 * @param user
-	 * @return 1×¢²á³É¹¦£¬0×¢²áÊ§°Ü,2ÓÃ»§ÒÑ´æÔÚ
+	 * @return 1æˆåŠŸ0å¤±è´¥2ç”¨æˆ·åå·²å­˜åœ¨
 	 */
 	public int register(User user);
 	
 	/**
-	 * µÇÂ¼Ê±¸ù¾İÓÃ»§Ãû²éÕÒÓÃ»§
-	 * @param ÊäÈëµÄÓÃ»§Ãû
-	 * @return ³É¹¦·µ»Ø¸ÃÓÃ»§,Ê§°Ü·µ»Ønull
+	 * ç™»å½•
+	 * @param ç”¨æˆ·å
+	 * @return ç”¨æˆ·
 	 */
 	public User login(String unknowusername);
+	
+	/**
+	 * æ ¹æ®ç”¨æˆ·idæŸ¥æ‰¾æƒé™åˆ—è¡¨
+	 * @param userId
+	 * @return
+	 */
+	public List<Permission> findPermissionList(int userId);
 
 }

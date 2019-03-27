@@ -4,10 +4,21 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>新增用户</title>
+<title>修改用户</title>
 <script type="text/javascript" src="/ssm-project/js/jquery.3.3.1.js"></script>
 <script>
-function checkRegister(){
+window.onload = function(){
+	var username = "${oldUser.username}";
+	var password = "${oldUser.password}";
+	var id = "${oldUser.id}";
+	$("#username").val(username);	
+	$("#password").val(password);
+	$("#id").val(id);
+}
+
+function checkUpdate(){
+	var strid = document.getElementById("id").value;
+	var id = parseInt(strid);
 	var username = document.getElementById("username").value;
 	var password = document.getElementById("password").value;
 	if (username == "") {
@@ -18,10 +29,11 @@ function checkRegister(){
 		alert("密码不能为空！");
 		return;
 	}
-	 $.ajax({
+	$.ajax({
 		type:"POST",
-		url:"/ssm-project/user/checkRegister",
+		url:"/ssm-project/user/updateUser",
 		data:{
+			"id":id,
 			"username":username,
 			"password":password
 		},
@@ -29,14 +41,11 @@ function checkRegister(){
 		success:function(data){
 			var status = data.status;
 			if (status == "1") {
-				alert("添加成功！");
-				window.location.href="<%=this.getServletContext().getContextPath() %>/user/userMessageManage";
-			}
-			if (status == "2") {
-				$("#namestatus").html("用户名已存在！");
+				alert("修改成功！");
+				window.location.href="/ssm-project/user/loginSuccess";
 			}
 			if (status == "0") {
-				
+				$("#namestatus").html("用户名已存在！");
 			}
 		}
 	}) 
@@ -46,8 +55,12 @@ function checkRegister(){
 </head>
 <body>
 	
-	<form action="<%=this.getServletContext().getContextPath() %>/user/checkRegister>" method="post">
+	<form action="<%=this.getServletContext().getContextPath() %>/user/updateUser>" method="post">
 		<table>
+			<tr hidden="true">
+				<td>id:</td>
+				<td><input id="id" type="text"></td>
+			</tr>
 			<tr>
 				<td>用户名:</td>
 				<td><input id="username" name="username" type="text"></td>
@@ -55,14 +68,17 @@ function checkRegister(){
 			</tr>
 			<tr>
 				<td>密码:</td>
-				<td><input id="password" name="password" type="password"></td>
+				<td><input id="password" name="password" type="text"></td>
 			</tr>
 			<tr>
-				<td><input type="button" value="提交" onclick="checkRegister()"></td>
+				<td><input type="button" value="修改" onclick="checkUpdate()"></td>
 				<td><font id="regstatus" color="red"></font></td>
 			</tr>
 		</table>
 	</form>
+
+	<a id="return" href="<%=this.getServletContext().getContextPath() %>/user/loginSuccess">返回</a>
+	
 </body>
 
 

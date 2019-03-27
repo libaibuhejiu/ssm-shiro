@@ -42,7 +42,7 @@ function checkUpdate(){
 			var status = data.status;
 			if (status == "1") {
 				alert("修改成功！");
-				window.location.href="/ssm-project/user/userManage";
+				window.location.href="/ssm-project/user/userMessageManage";
 			}
 			if (status == "0") {
 				$("#namestatus").html("用户名已存在！");

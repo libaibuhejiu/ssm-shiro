@@ -1,13 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="mytag" uri="/mytag" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
-<title>用户管理</title>
+<title>用户信息管理</title>
 <script type="text/javascript" src="/ssm-project/js/jquery.3.3.1.js"></script>
 <script type="text/javascript">
+	
 	function addUser(){
 		window.location.href="<%=this.getServletContext().getContextPath() %>/user/addWin";
 	}
@@ -29,7 +31,7 @@
 				success:function(data){
 					if (data.status == "1") {
 						alert("删除成功！");
-						window.location.href="/ssm-project/user/userManage";
+						window.location.href="/ssm-project/user/userMessageManage";
 					}
 					if (data.status == "0") {
 						alert("删除失败，请重试！");
@@ -43,20 +45,30 @@
 </script>
 </head>
 <body>
+	
 	<div>
-		<input id="add_button" type="button" onclick="addUser()"  value="新增用户">
-		<input id="findCondition" type="text" style="margin-left:100px">
-		<input id="find_button" type="button" onclick="findUser()" value="查找用户">
+		<mytag:hasAnyPermission name="admin:create,user:create">
+			<input id="add_button" type="button" onclick="addUser()"  value="新增用户">
+		</mytag:hasAnyPermission>
+		<mytag:hasAnyPermission name="admin:query,user:query">
+			<input id="findCondition" type="text" style="margin-left:100px">
+			<input id="find_button" type="button" onclick="findUser()" value="查找用户">
+		</mytag:hasAnyPermission>
+		
 	</div>
 	<div id="userList">
-		<div id="table_area">
+		<mytag:hasAnyPermission name="admin:query,admin:delete,user:query">
+			<div id="table_area">
 			<table id="table_uesr" border="1">
 				<thead>
 					<tr>
 						<td>用户id</td>
 						<td>用户名</td>
 						<td>密码</td>
-						<td>操作</td>
+						<mytag:hasAnyPermission name="admin:delete,user:delete">
+							<td>操作</td>
+						</mytag:hasAnyPermission>
+						
 					</tr>
 				</thead>
 				<tbody>
@@ -66,8 +78,13 @@
 							<td>${user.username }</td>
 							<td>${user.password }</td>
 							<td>
-								<a href="/ssm-project/user/updateWin?id=${user.id }">修改</a>
-								<a href="#" onclick="deleteUser(${user.id})">删除</a>
+								<mytag:hasAnyPermission name="admin:modify,user:modify">
+									<a href="/ssm-project/user/updateWin?id=${user.id }">修改</a>
+								</mytag:hasAnyPermission>
+								<mytag:hasAnyPermission name="admin:delete,user:delete">
+									<a href="#" onclick="deleteUser(${user.id})">删除</a>
+								</mytag:hasAnyPermission>
+								
 							</td>
 						</tr>
 					</c:forEach>
@@ -137,6 +154,12 @@
 				</tbody>
 			</table>
 		</div>
+		
+		</mytag:hasAnyPermission>
+		
+	</div>
+	<div>
+		<a id="return" href="<%=this.getServletContext().getContextPath() %>/user/loginSuccess">返回</a>
 	</div>
 </body>
 </html>

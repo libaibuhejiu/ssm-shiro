@@ -16,6 +16,11 @@
 		select count(id) from user
 	</select>
 	
+	<!-- permission表里是否存在该permission -->
+	<select id="findPermissionCount" resultType="Integer">
+		select count(permission) from permission where permission = #{permission}
+	</select>
+	
 	<!-- 根据起始记录数和每页数量查询出用户列表 -->
 	<select id="findUsersByPage" resultType="com.huaruan.qhg.bean.User">
 		select * from user limit #{begin},#{pageSize}
@@ -26,6 +31,11 @@
 		select * from user where id = #{id}
 	</select>
 	
+	<!-- 根据permission从permission表中查找permission的id -->
+	<select id="findByPerms" resultType="Integer">
+		select id from permission where permission = #{permission}
+	</select>
+	
 	<!-- 根据用户名和id查找出除此id之外的其他用户 -->
 	<select id="findExtraExistsByUsername" resultType="com.huaruan.qhg.bean.User">
 		select * from user where id<![CDATA[<> ]]>#{id} and username = #{username}
@@ -33,7 +43,22 @@
 	
 	<!-- 插入新用户 -->
 	<insert id="insertUser" parameterType="com.huaruan.qhg.bean.User">
-		insert into user (username,password) values (#{username},#{password})
+		insert into user (username,password,salt,role_id) values (#{username},#{password},#{salt},#{roleId})
+	</insert>
+	
+	<!-- 插入user_role -->
+	<insert id="insertUserRole">
+		insert into user_role (user_id,role_id) values (#{user_id},#{role_id})
+	</insert>
+	
+	<!-- 向permission表中新增权限 -->
+	<insert id="insertIntoPermission">
+		insert into permission (permission,description) values (#{permission},#{description})
+	</insert>
+	
+	<!-- 向role_permission表插入,注意将enable置为0 -->
+	<insert id="insertIntoRP">
+		insert into role_permission (role_id,permission_id,enable) values (#{role_id},#{permission_id},0)
 	</insert>
 	
 	<!-- 查找所有用户 -->
@@ -46,13 +71,94 @@
 		select * from user where username like "%"#{usernameCondition}"%"
 	</select>
 	
+	<!-- 根据用户id查找出 -->
+	<select id="findRoleListByUserId" resultType="String">
+		select * from user_role where user_id = #{user_id}
+	</select>
+	
+	<!-- 根据permission在permission表中查找有几个同名权限 -->
+	<select id="findPermissionByPermission" resultType="Integer">
+		select count(id) from permission where permission = #{permission}
+	</select>
+	
+	<!-- 根据用户id查找出role_id -->
+	<select id="findRoleIdListByUserId" resultType="String">
+		select role_id from user_role where user_id = #{user_id}
+	</select>
+	
+	<!-- 根据role_id查找出Role实例 -->
+	<select id="findRoleByRoleId" resultType="com.huaruan.qhg.bean.Role">
+		select * from role where role_id = #{role_id}
+	</select>
+	
+	<!-- 根据role_id找出所有Permission_id -->
+	<select id="findPermissionIdListByRoleId" resultType="Integer">
+		select permission_id from role_permission where role_id = #{role_id} and enable = 1
+	</select>
+	
+	<!-- 根据role_id找出所有unPermission_id -->
+	<select id="findUnPermissionIdListByRoleId" resultType="Integer">
+		select permission_id from role_permission where role_id = #{role_id} and enable = 0
+	</select>
+
+	<!-- 根据角色id查找出权限id列表 -->
+	<select id="findPermissionListByRoleId" resultType="Integer">
+		select permission_id from role_permission where role_id = #{role_id} and enable = 1
+	</select>
+	
+	<!-- 根据权限id找出权限 -->
+	<select id="findPermissionByPermissionId" resultType="com.huaruan.qhg.bean.Permission">
+		select id,permission,description from permission where id = #{id}
+	</select>
+	
 	<!-- 根据id修改用户信息 -->
 	<update id="updateById" parameterType="com.huaruan.qhg.bean.User">
-		update user set username = #{username},password = #{password} where id = #{id}
+		update user set username = #{username},password = #{password},salt = #{salt} where id = #{id}
 	</update>
+	
+	<!-- 在user表中根据用户id修改role_id -->
+	<update id="updateRoleIdInUserTable">
+		update user set role_id = #{role_id} where id = #{id}
+	</update>
+	
+	<!-- 在user_role表中根据用户id修改role_id -->
+	<update id="updateRoleIdInUserRoleTable">
+		update user_role set role_id = #{role_id} where user_id = #{user_id}
+	</update>
+	
+	<!-- 根据role_id确定role -->
+	<select id="findRoleNameByRoleId" resultType="String">
+		select role from role where role_id = #{role_id}
+	</select>
 	
 	<!-- 根据id删除用户 -->
 	<delete id="deleteById">
 		delete from user where id=#{id}
 	</delete>
+	
+	<!-- 根据id删除permission表的记录 -->
+	<delete id="deletePermissionFormPermission">
+		delete from permission where id = #{id}
+	</delete>
+	
+	<!-- 根据roleId和permissionId删除role_permission表的记录 -->
+	<delete id="deletePermissionFormRP">
+		delete from role_permission where role_id=#{role_id} and permission_id = #{permission_id}
+	</delete>
+	
+	<!-- 根据roleId和permisisonId删除对应权限,其实是将role_permission表中的enable字段置为0 -->
+	<update id="deletePermissionBy2Id">
+		update role_permission set enable = 0 where role_id = #{role_id} and permission_id = #{permission_id}
+	</update>
+	
+	<!-- 根据roleId和permisisonId删除对应权限,其实是将role_permission表中的enable字段置为0 -->
+	<update id="addPermissionBy2Id">
+		update role_permission set enable = 1 where role_id = #{role_id} and permission_id = #{permission_id}
+	</update>
+	
+	<!-- 根据permissionId修改Permission表 -->
+	<update id="updatePermissionById">
+		update permission set permission = #{permission},description=#{description} where id = #{id}
+	</update>
+
 </mapper>

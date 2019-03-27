@@ -18,7 +18,7 @@
     <mvc:annotation-driven />
     <mvc:default-servlet-handler />
     <!-- spring MVC配置，包含网站跳转逻辑的控制，配置 -->
-    <context:component-scan base-package="com.huaruan.qhg.controller"
+    <context:component-scan base-package="com.huaruan.qhg"
         use-default-filters="false">
         <!-- 只扫描控制器 -->
         <context:include-filter type="annotation"
